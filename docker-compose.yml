@@ -1,0 +1,19 @@
+services:
+  postgres:
+    image: postgres:16.9
+    environment:
+      POSTGRES_USER: root
+      POSTGRES_PASSWORD: root
+      POSTGRES_DB: google-uploader
+    ports:
+      - "5432:5432"
+    volumes:
+      - pgdata:/var/lib/postgresql/data
+
+  redis:
+    image: redis:8.0
+    ports:
+      - "6379:6379"
+
+volumes:
+  pgdata:
