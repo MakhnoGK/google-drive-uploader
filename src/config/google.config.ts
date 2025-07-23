@@ -1,5 +1,6 @@
 import { readFile } from 'node:fs/promises';
 import { CREDENTIALS_FILE_PATH } from '~/google/constants';
+import { CredentialsDto } from '~/google/dto/credentials.dto';
 
 export default async () => {
   const content = await readFile(CREDENTIALS_FILE_PATH, 'utf-8').catch(() =>
@@ -8,5 +9,5 @@ export default async () => {
 
   if (!content) return {};
 
-  return JSON.parse(content) as { accessToken: string; refreshToken: string };
+  return CredentialsDto.fromPlain(JSON.parse(content) as object);
 };

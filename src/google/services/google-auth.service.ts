@@ -1,11 +1,11 @@
 import * as assert from 'node:assert';
 import { writeFile } from 'node:fs/promises';
-import * as path from 'node:path';
 import { Injectable, OnModuleInit } from '@nestjs/common';
 import { ConfigService } from '@nestjs/config';
 import { OAuth2Client } from 'google-auth-library';
 import { google } from 'googleapis';
 import { CREDENTIALS_FILE_PATH } from '~/google/constants';
+import { CredentialsDto } from '../dto/credentials.dto';
 
 @Injectable()
 export class GoogleAuthService implements OnModuleInit {
@@ -17,12 +17,18 @@ export class GoogleAuthService implements OnModuleInit {
     this.authClient = new google.auth.OAuth2({
       clientId: this.configService.get('GOOGLE_CLIENT_ID'),
       clientSecret: this.configService.get('GOOGLE_CLIENT_SECRET'),
-      redirectUri: this.configService.get('GOOGLE_REDIRECT_URI'),
+      redirectUri: this.configService.get('GOOGLE_REDIRECT_URL'),
     });
 
     this.authClient.setCredentials({
-      refresh_token: this.configService.get('refreshToken'),
+      access_token: this.configService.get('access_token'),
+      refresh_token: this.configService.get('refresh_token'),
+      expiry_date: this.configService.get('expiry_date'),
     });
+  }
+
+  getAuthClient() {
+    return this.authClient;
   }
 
   getAuthUrl() {
@@ -32,28 +38,28 @@ export class GoogleAuthService implements OnModuleInit {
     });
   }
 
-  async saveAuthCredentials(code: string) {
+  async authenticate(code: string) {
     const {
-      tokens: { access_token, refresh_token },
+      tokens: { access_token, refresh_token, expiry_date },
     } = await this.authClient.getToken(code);
 
     assert(access_token, 'Failed to retrieve access token from Google OAuth2 client');
     assert(refresh_token, 'Failed to retrieve refresh token from Google OAuth2 client');
 
-    this.authClient.setCredentials({ access_token, refresh_token });
-    await this.writeTokens(access_token, refresh_token);
+    this.authClient.setCredentials({ access_token, refresh_token, expiry_date });
+
+    await this.saveCredentials(CredentialsDto.fromPlain({ access_token, refresh_token, expiry_date }));
   }
 
-  async getAccessToken() {
-    const { token } = await this.authClient.getAccessToken();
+  getAccessToken() {
+    const token = this.authClient.credentials.access_token;
 
     assert(token, 'Failed to retrieve access token from Google OAuth2 client');
 
     return token;
   }
 
-  private async writeTokens(accessToken: string, refreshToken: string) {
-    const data = { accessToken, refreshToken };
-    await writeFile(CREDENTIALS_FILE_PATH, JSON.stringify(data));
+  private async saveCredentials(credentialsDto: CredentialsDto) {
+    await writeFile(CREDENTIALS_FILE_PATH, JSON.stringify(credentialsDto));
   }
 }

@@ -23,8 +23,8 @@ export class GoogleDriveFilesService {
     private readonly httpService: HttpService
   ) {}
 
-  async createUpload({ contentLength, filename }: CreateUploadRequestDataDto) {
-    const accessToken = await this.googleAuthService.getAccessToken();
+  createUpload({ contentLength, filename }: CreateUploadRequestDataDto) {
+    const accessToken = this.googleAuthService.getAccessToken();
 
     return ResumableUpload.create(this.httpService, { accessToken, contentLength, filename });
   }
