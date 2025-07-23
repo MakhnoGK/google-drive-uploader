@@ -1,18 +1,6 @@
 import * as https from 'node:https';
-import { Readable } from 'node:stream';
 import { Injectable } from '@nestjs/common';
-import { Expose } from 'class-transformer';
-import { IsNumber, IsObject } from 'class-validator';
-
-class PreparedDownloadInfo {
-  @Expose()
-  @IsNumber()
-  contentLength: number;
-
-  @Expose()
-  @IsObject()
-  stream: Readable;
-}
+import { PreparedDownloadInfo } from '~/files/dto/prepared-download-info.dto';
 
 @Injectable()
 export class RemoteFileService {

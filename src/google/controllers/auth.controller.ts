@@ -1,18 +1,8 @@
 import { Controller, Get, Query, Res } from '@nestjs/common';
-import { Expose } from 'class-transformer';
-import { IsString } from 'class-validator';
 import { Response as ResponseType } from 'express';
+import { AuthCallbackQueryParamsDto } from '~/google/dto/auth-callback-query-params.dto';
+import { AuthCallbackResponseDto } from '~/google/dto/auth-callback-response.dto';
 import { GoogleAuthService } from '~/google/services/google-auth.service';
-
-class AuthCallbackQueryParamsDto {
-  @Expose()
-  @IsString()
-  code: string;
-
-  @Expose()
-  @IsString()
-  scope: string;
-}
 
 @Controller('google/auth')
 export class AuthController {
@@ -27,6 +17,6 @@ export class AuthController {
   @Get('callback')
   async handleCallback(@Query() { code }: AuthCallbackQueryParamsDto) {
     await this.googleAuthService.saveAuthCredentials(code);
-    return { success: true, message: 'Authentication successful' };
+    return AuthCallbackResponseDto.fromPlain({ success: true, message: 'Authentication successful' });
   }
 }

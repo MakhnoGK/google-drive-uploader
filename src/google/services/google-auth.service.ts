@@ -5,6 +5,7 @@ import { Injectable, OnModuleInit } from '@nestjs/common';
 import { ConfigService } from '@nestjs/config';
 import { OAuth2Client } from 'google-auth-library';
 import { google } from 'googleapis';
+import { CREDENTIALS_FILE_PATH } from '~/google/constants';
 
 @Injectable()
 export class GoogleAuthService implements OnModuleInit {
@@ -53,6 +54,6 @@ export class GoogleAuthService implements OnModuleInit {
 
   private async writeTokens(accessToken: string, refreshToken: string) {
     const data = { accessToken, refreshToken };
-    await writeFile(path.resolve(process.cwd(), 'google_tokens.json'), JSON.stringify(data));
+    await writeFile(CREDENTIALS_FILE_PATH, JSON.stringify(data));
   }
 }

@@ -1,6 +1,7 @@
 import { Processor, WorkerHost } from '@nestjs/bullmq';
 import { Job } from 'bullmq';
 import { RemoteFileUploadService } from '~/files/services/remote-file-upload.service';
+import { UploadFileJobMeta } from '~/files/types';
 import { QueueNames } from '~/queue/constants';
 
 @Processor(QueueNames.DOWNLOAD_AND_UPLOAD)
@@ -9,8 +10,7 @@ export class RemoteFileUploadWorker extends WorkerHost {
     super();
   }
 
-  // TODO: Extract type
-  async process(job: Job<{ url: string }>) {
+  async process(job: Job<UploadFileJobMeta>) {
     await this.remoteFileUploadService.upload(job.data.url);
   }
 }

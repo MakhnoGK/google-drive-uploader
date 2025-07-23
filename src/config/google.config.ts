@@ -1,8 +1,8 @@
 import { readFile } from 'node:fs/promises';
-import * as path from 'node:path';
+import { CREDENTIALS_FILE_PATH } from '~/google/constants';
 
 export default async () => {
-  const content = await readFile(path.resolve(process.cwd(), 'google_tokens.json'), 'utf-8').catch(() =>
+  const content = await readFile(CREDENTIALS_FILE_PATH, 'utf-8').catch(() =>
     console.warn('Unable to read credentials file, please authenticate!')
   );
 
