@@ -1,11 +1,11 @@
 import { Body, Controller, Get, Post } from '@nestjs/common';
 import { UploadRequestDto } from '~/files/dto/upload-request.dto';
 import { UploadResponseDto } from '~/files/dto/upload-response.dto';
-import { DownloadUploadQueueService } from '~/queue/services/download-upload-queue.service';
+import { RemoteFileUploadQueueService } from '~/files/services/remote-file-upload-queue.service';
 
 @Controller('files')
 export class FilesController {
-  constructor(private readonly downloadUploadQueueService: DownloadUploadQueueService) {}
+  constructor(private readonly downloadUploadQueueService: RemoteFileUploadQueueService) {}
 
   @Get('list')
   list() {}
