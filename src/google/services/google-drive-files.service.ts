@@ -27,20 +27,6 @@ export class GoogleDriveFilesService {
     const accessToken = await this.googleAuthService.getAccessToken();
     return ResumableUpload.create(this.httpService, { accessToken, contentLength, filename });
   }
-
-  async getFileInfo(fileId: string) {
-    const accessToken = await this.googleAuthService.getAccessToken();
-
-    const { data } = await lastValueFrom(
-      this.httpService.get<{ webViewLink: string }>(`https://www.googleapis.com/drive/v3/files/${fileId}`, {
-        headers: {
-          Authorization: `Bearer ${accessToken}`,
-        },
-      })
-    );
-
-    return data;
-  }
 }
 
 type ResumableUploadOptions = {
