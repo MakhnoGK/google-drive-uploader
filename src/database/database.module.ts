@@ -1,5 +1,6 @@
 import { Module } from '@nestjs/common';
 import { TypeOrmModule } from '@nestjs/typeorm';
+import { FileEntity } from '~/files/entities/file.entity';
 
 @Module({
   imports: [
@@ -10,7 +11,7 @@ import { TypeOrmModule } from '@nestjs/typeorm';
       username: 'root',
       password: 'root',
       database: 'google-uploader',
-      entities: [],
+      entities: [FileEntity],
       synchronize: true,
       autoLoadEntities: true,
     }),

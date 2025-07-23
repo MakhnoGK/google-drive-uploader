@@ -26,12 +26,11 @@ export class RemoteFileUploadService {
     for await (const chunk of transformedStream) {
       const result = await resumableUpload.uploadChunk(chunk as Buffer);
 
+      // Happens if the file uploaded, and we got status 201 or 200
       if (result) {
-        console.log('success');
+        await this.databaseFileService.saveFile({ id: result.id, name: filename });
         break;
       }
     }
-
-    // TODO(Hryhorii): Save file metadata to database
   }
 }
