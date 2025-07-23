@@ -1,4 +1,36 @@
 services:
+  app:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    deploy:
+      replicas: 3
+      restart_policy:
+        condition: on-failure
+    env_file:
+      - .env.production
+    environment:
+      - NODE_ENV=production
+      - DATABASE_URL=postgres://user:password@db:5432/nestjs_db
+      - GOOGLE_DRIVE_CLIENT_ID=${GOOGLE_CLIENT_ID}
+      - GOOGLE_DRIVE_CLIENT_SECRET=${GOOGLE_CLIENT_SECRET}
+      - GOOGLE_DRIVE_REDIRECT_URI=${GOOGLE_REDIRECT_URI}
+    depends_on:
+      - postgres
+    networks:
+      - app-network
+
+  nginx:
+    image: nginx:latest
+    ports:
+      - "80:80"
+    volumes:
+      - ./nginx.conf:/etc/nginx/nginx.conf:ro
+    depends_on:
+      - app
+    networks:
+      - app-network
+
   postgres:
     image: postgres:16.9
     environment:
@@ -9,11 +41,19 @@ services:
       - "5432:5432"
     volumes:
       - pgdata:/var/lib/postgresql/data
+    networks:
+      - app-network
 
   redis:
     image: redis:8.0
+    networks:
+      - app-network
     ports:
       - "6379:6379"
 
 volumes:
   pgdata:
+
+networks:
+  app-network:
+    driver: bridge
