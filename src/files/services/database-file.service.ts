@@ -15,6 +15,7 @@ export class DatabaseFileService {
   }
 
   getList() {
+    // TODO(Hryhorii): implement pagination
     return this.fileRepository.find();
   }
 }
