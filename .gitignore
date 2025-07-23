@@ -1,6 +1,6 @@
 # google
 credentials.json
-tokens.json
+google_tokens.json
 
 # compiled output
 /dist
