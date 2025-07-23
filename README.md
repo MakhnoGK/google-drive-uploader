@@ -1,12 +1,9 @@
 # Google Drive file uploader
 
-An API that allows clients to upload files from URL to Google Drive.
+An API that enables clients to upload files from URLs to Google Drive. This project is developed as a test assignment for OBRIO.
 
-Tech stack: NestJS, Postgres, BullMQ, Redis, Nginx, Docker
+Technology stack: NestJS, PostgreSQL, BullMQ, Redis, Nginx, and Docker.
 
-## Endpoints
-
-File upload: accepts an array of URLs of remote files to be uploaded to GDrive.
 ```
 POST /files/upload
 { files: Array<string> }
