@@ -9,7 +9,7 @@ import { PaginationRequestDto } from './dto/pagination-request.dto';
 @Controller('files')
 export class FilesController {
   constructor(
-    private readonly downloadUploadQueueService: RemoteFileUploadQueueService,
+    private readonly remoteUploadQueueService: RemoteFileUploadQueueService,
     private readonly databaseFileService: DatabaseFileService
   ) {}
 
@@ -22,7 +22,7 @@ export class FilesController {
   @UseGuards(GoogleAuthGuard)
   @Post('upload')
   async upload(@Body() requestDto: UploadRequestDto) {
-    await this.downloadUploadQueueService.enqueue(requestDto.urls);
+    await this.remoteUploadQueueService.enqueue(requestDto.urls);
 
     return UploadResponseDto.fromPlain({ success: true });
   }
