@@ -1,9 +1,10 @@
-import { Body, Controller, Get, Post, UseGuards } from '@nestjs/common';
+import { Body, Controller, Get, Post, Query, UseGuards } from '@nestjs/common';
 import { UploadRequestDto } from '~/files/dto/upload-request.dto';
 import { UploadResponseDto } from '~/files/dto/upload-response.dto';
 import { DatabaseFileService } from '~/files/services/database-file.service';
 import { RemoteFileUploadQueueService } from '~/files/services/remote-file-upload-queue.service';
 import { GoogleAuthGuard } from '~/google/guards/google-auth.guard';
+import { PaginationRequestDto } from './dto/pagination-request.dto';
 
 @Controller('files')
 export class FilesController {
@@ -14,8 +15,8 @@ export class FilesController {
 
   @UseGuards(GoogleAuthGuard)
   @Get('list')
-  list() {
-    return this.databaseFileService.getList();
+  list(@Query() pagination: PaginationRequestDto) {
+    return this.databaseFileService.getPaginatedList(pagination);
   }
 
   @UseGuards(GoogleAuthGuard)

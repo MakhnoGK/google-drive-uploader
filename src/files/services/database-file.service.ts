@@ -2,6 +2,8 @@ import { Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
 import { FileEntity } from '~/files/entities/file.entity';
+import { PaginationRequestDto } from '../dto/pagination-request.dto';
+import { PaginateResponseDto } from '../dto/pagination-response.dto';
 
 @Injectable()
 export class DatabaseFileService {
@@ -15,7 +17,20 @@ export class DatabaseFileService {
   }
 
   getList() {
-    // TODO(Hryhorii): implement pagination
     return this.fileRepository.find();
+  }
+
+  async getPaginatedList({ page, pageSize }: PaginationRequestDto) {
+    const offset = (page - 1) * pageSize;
+
+    const total = await this.fileRepository.count();
+    const files = await this.fileRepository.find({ skip: offset, take: pageSize });
+
+    return PaginateResponseDto.fromPlain({
+      data: files,
+      total,
+      page,
+      pageSize,
+    });
   }
 }
