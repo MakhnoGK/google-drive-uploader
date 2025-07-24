@@ -23,8 +23,11 @@ export class DatabaseFileService {
   async getPaginatedList({ page, pageSize }: PaginationRequestDto) {
     const offset = (page - 1) * pageSize;
 
-    const total = await this.fileRepository.count();
-    const files = await this.fileRepository.find({ skip: offset, take: pageSize });
+    const [files, total] = await this.fileRepository.findAndCount({
+      take: pageSize,
+      skip: offset,
+      order: { createdAt: 'DESC' },
+    });
 
     return PaginateResponseDto.fromPlain({
       data: files,
