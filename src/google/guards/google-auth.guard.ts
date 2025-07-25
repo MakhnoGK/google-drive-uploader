@@ -9,10 +9,7 @@ export class GoogleAuthGuard implements CanActivate {
   canActivate(context: ExecutionContext) {
     const response = context.switchToHttp().getResponse<Response>();
 
-    const authClient = this.googleAuthService.getAuthClient();
-    const { access_token, refresh_token, expiry_date } = authClient.credentials;
-
-    if (!access_token || !refresh_token || (expiry_date || 0) <= Date.now()) {
+    if (!this.googleAuthService.isAuthenticated()) {
       response.redirect(this.googleAuthService.getAuthUrl());
       return false;
     }

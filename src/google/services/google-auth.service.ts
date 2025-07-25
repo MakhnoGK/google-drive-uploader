@@ -51,6 +51,12 @@ export class GoogleAuthService implements OnModuleInit {
     await this.saveCredentials(CredentialsDto.fromPlain({ access_token, refresh_token, expiry_date }));
   }
 
+  isAuthenticated() {
+    const { access_token, refresh_token, expiry_date } = this.authClient.credentials;
+
+    return access_token && refresh_token && expiry_date! >= Date.now();
+  }
+
   getAccessToken() {
     const token = this.authClient.credentials.access_token;
 
